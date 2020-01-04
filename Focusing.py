@@ -58,7 +58,7 @@ def LocationFocusing( k_t, M_t, b_t,    g_t, w_prev, s_t, gamma_t,   K = None):
     w_gt = g_t * w_ct + (1 - g_t) * w_prev
     
     #Convolutional Shift
-    w_hat_t = np.zeros(N)                       #These loops will limit the speed clearly, it would be good to wrap them in C (or find an alternative function)
+    w_hat_t = np.zeros(N)                       #These loops will limit the speed clearly, find an alternative.
     for i in range(N):
         for j in range(N):
             w_hat_t[i] += w_gt[j]*s_t[i-j]
