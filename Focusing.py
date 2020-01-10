@@ -40,8 +40,8 @@ def LocationFocusing( k_t, M_t, b_t,    g_t, w_prev, s_t, gamma_t,   K = None):
     k_t, M_t, b_t, K : SAME AS IN CONTENT FOCUSING
     g_t : Scalar, Interpolation Gate in the range (0,1) emitted by HEAD IN USE.
     w_prev : (N,), Weight Vector produced by the HEAD IN USE at the previous time step.
-    s_t : (N,), The weights emitted by the HEAD IN USE that defines the normalized distribution over the allowed integer shifts (which is shift_range object)
-                NOTE: s_t is supposed to be padded by zeroes for all the elements not in the shift_range, thus making it a length N vector from length len(shift_range) vector.
+    s_t : (len(shift_range),), The weights emitted by the HEAD IN USE that defines the normalized distribution over the allowed integer shifts (which is shift_range object)
+                
     gamma_t : Scalar, Sharpening Factor >= 1    
     
     RETURNS:
@@ -58,10 +58,10 @@ def LocationFocusing( k_t, M_t, b_t,    g_t, w_prev, s_t, gamma_t,   K = None):
     w_gt = g_t * w_ct + (1 - g_t) * w_prev
     
     #Convolutional Shift
-    w_hat_t = np.zeros(N)                       #These loops will limit the speed clearly, find an alternative.
+    w_hat_t = np.zeros(N)                       #These loops will limit the speed clearly, it would be good to wrap them in C (or find an alternative function)
     for i in range(N):
         for j in range(N):
-            w_hat_t[i] += w_gt[j]*s_t[i-j]
+            w_hat_t[i] += w_gt[j]*s_t[(i-j)%N]
     
     #Sharpening
     powered = tf.pow(w_hat_t,gamma_t)
