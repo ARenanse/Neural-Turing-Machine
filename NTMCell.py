@@ -131,7 +131,6 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
         All_R_Matrix = tf.convert_to_tensor(All_Heads_R_list)  #R for Read         
         #^Of Shape [num_Read_Heads, batch_size, M]
 
-        #TODO:: COMPLETE THE CONVOLUTION OPERATION IN FOCUSING AND THEN COMPLETE THIS CLASS
 
         NTM_output = self.NTM_ouput_gen_layer(controller_output)
         
@@ -149,9 +148,9 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
     #CHANGE INITIAL STATES TO SOME OTHER VALUES AND OBSERVE WHETHER THE MODEL IMPROVES OR NOT
     def get_initial_state(self, inputs=None, batch_size=None, dtype=None):
         initial_state = {
-            'controller_state': [tf.random.normal((batch_size,self.rnn_size),stddev=0.05), tf.random.normal((batch_size,self.rnn_size),stddev=0.05)],
-            'All_Read_vectors': tf.random.normal((self.num_read_heads,batch_size,self.memory_columns),stddev=0.05),
-            'All_Weight_vectors': tf.random.normal((self.total_num_heads, batch_size, self.memory_rows),stddev=0.05),
-            'Memory_Matrix': tf.random.normal((batch_size,self.memory_rows,self.memory_columns),stddev=0.05)
-        }
+            'controller_state': [2.53 * tf.ones((batch_size,self.rnn_size)), 2.53 * tf.ones((batch_size,self.rnn_size))],
+            'All_Read_vectors': 2.53 * tf.ones((self.num_read_heads,batch_size,self.memory_columns)),
+            'All_Weight_vectors': 2.53 * tf.ones((self.total_num_heads, batch_size, self.memory_rows)),
+            'Memory_Matrix': 2.53 * tf.ones((batch_size,self.memory_rows,self.memory_columns))
+        } #Such an initialization worked for me.
         return initial_state
