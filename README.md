@@ -10,4 +10,3 @@ Progress Timeline:
 2. Sun, Jan 19:-
 + Added *sigmoid* layer on *Heads_w_t* which produced much better results on one time step passes (not the training)
 + In the process of finalizing the training schedule.
-+ 
