@@ -17,6 +17,8 @@ def ReadVector(M_t, w_t):
     
     #tol = 0.01
     #assert (np.sum(w_t) >= 1.0 - tol) & (np.sum(w_t) <= 1.0 + tol)
+    #print(batch_size,N,M)
+    #print('w_t shape: ',w_t.shape)
     r_t = tf.reshape(  tf.matmul(tf.reshape(w_t,(batch_size,1,N)),M_t), (batch_size,M)   )
     
     #assert r_t.shape == (batch_size,M)
