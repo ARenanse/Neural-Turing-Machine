@@ -34,10 +34,11 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
         
         self.total_parameters = ( 3 * self.memory_columns + 3 + len(self.shift_range) )*(self.num_write_heads + self.num_read_heads)
         
-        self.PMG_Layer = tf.keras.layers.Dense(units= self.total_parameters, use_bias=True) #PMG_Layer = Parameter Matrix GeneratingLayer CHECK INTITIALISATION OF PARAMETERS FOR IMPROVEMENT
+        self.PMG_Layer = tf.keras.layers.Dense(units= self.total_parameters, use_bias=True,) #PMG_Layer = Parameter Matrix GeneratingLayer CHECK INTITIALISATION OF PARAMETERS FOR IMPROVEMENT
         
         self.NTM_ouput_gen_layer = tf.keras.layers.Dense(units= self.output_dim,use_bias = True)
         
+            
     def call(self, inputs, previous_states):
 
         '''
@@ -93,25 +94,25 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
             #EXPERIMENT WITH OTHER VALID COMBINATIONS OF THE BELOW USED ACTIVATIONS
             
             #For k_t:-
-            k_t = tf.tanh(k_t)
+            k_t = tf.tanh(k_t + 1e-6)
             #For beta_t:-
-            beta_t = tf.sigmoid(beta_t)
+            beta_t = tf.sigmoid(beta_t + 1e-6)
             #For g_t:-
-            g_t = tf.sigmoid(g_t)
+            g_t = tf.sigmoid(g_t + 1e-6)
             #For s_t:-
-            s_t = tf.nn.softmax(s_t + 1e-10)
+            s_t = tf.nn.softmax(s_t + 1e-6)
             #The above s_t is one of the points where we can improve
             #For gamma_t:-
-            gamma_t = tf.math.log(tf.exp(gamma_t) + 1) + 1
+            gamma_t = tf.math.log(tf.exp(gamma_t + 1e-6) + 1 + 1e-6) + 1
             #For a_t:-
-            a_t = tf.tanh(a_t)
+            a_t = tf.tanh(a_t + 1e-6)
             #For e_t:-
-            e_t = tf.sigmoid(e_t)
+            e_t = tf.sigmoid(e_t + 1e-6)
 
             if self.addressing_type == 'LOC':
-                Heads_w_t = Batch_Focusing.LocationFocusing( k_t, M_prev, beta_t,    g_t, w_prev[i], s_t, gamma_t,   K = None)
+                Heads_w_t = tf.nn.sigmoid(Batch_Focusing.LocationFocusing( k_t, M_prev, beta_t,    g_t, w_prev[i], s_t, gamma_t,   K = None))
             elif self.addressing_type == 'CONT':
-                Heads_w_t = Batch_Focusing.ContentFocusing( k_t, M_prev, beta_t, K = None)
+                Heads_w_t = tf.nn.sigmoid(Batch_Focusing.ContentFocusing( k_t, M_prev, beta_t, K = None))
                 #^Should be of shape [batch_size,N]
 
             if i<self.num_read_heads:
@@ -131,6 +132,7 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
         All_R_Matrix = tf.convert_to_tensor(All_Heads_R_list)  #R for Read         
         #^Of Shape [num_Read_Heads, batch_size, M]
 
+        #TODO:: COMPLETE THE CONVOLUTION OPERATION IN FOCUSING AND THEN COMPLETE THIS CLASS
 
         NTM_output = self.NTM_ouput_gen_layer(controller_output)
         
@@ -143,14 +145,35 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
         
         return NTM_output, current_states
 
+    
+    @property
+    def state_size(self):
+        return {
+            'controller_state' : self.controller.state_size,
+            'All_Read_vectors' : tf.TensorShape((self.num_read_heads,None,self.memory_columns)),
+            'All_Weight_vectors' : tf.TensorShape(((self.total_num_heads, None, self.memory_rows))),
+            'Memory_Matrix' : tf.TensorShape([None,self.memory_rows,self.memory_columns])
+        }
 
+    @property
+    def output_size(self):
+        return self.output_dim
     
     #CHANGE INITIAL STATES TO SOME OTHER VALUES AND OBSERVE WHETHER THE MODEL IMPROVES OR NOT
     def get_initial_state(self, inputs=None, batch_size=None, dtype=None):
         initial_state = {
-            'controller_state': [2.53 * tf.ones((batch_size,self.rnn_size)), 2.53 * tf.ones((batch_size,self.rnn_size))],
-            'All_Read_vectors': 2.53 * tf.ones((self.num_read_heads,batch_size,self.memory_columns)),
-            'All_Weight_vectors': 2.53 * tf.ones((self.total_num_heads, batch_size, self.memory_rows)),
-            'Memory_Matrix': 2.53 * tf.ones((batch_size,self.memory_rows,self.memory_columns))
-        } #Such an initialization worked for me.
+            'controller_state': [0.5 * tf.ones((batch_size,self.rnn_size)), 2.53 * tf.ones((batch_size,self.rnn_size))],
+            'All_Read_vectors': 0.5 * tf.ones((self.num_read_heads,batch_size,self.memory_columns)),
+           'All_Weight_vectors': 0.5 * tf.ones((self.total_num_heads, batch_size, self.memory_rows)),
+            'Memory_Matrix': 0.5 * tf.ones((batch_size,self.memory_rows,self.memory_columns))
+        }
+        
+        #initial_state = {
+        #    'controller_state': [tf.compat.v1.get_variable(name = 'controller_state_memory',shape=[batch_size, self.rnn_size], dtype = tf.float32,                                       #                         initializer=tf.random_normal_initializer(stddev = 0.5)), tf.compat.v1.get_variable(name = 'controller_state_carry',shape=[batch_size,                   #                                                                          self.rnn_size], dtype = tf.float32, initializer=tf.random_normal_initializer(stddev = 0.5))],
+        #    
+        #    'All_Read_vectors': tf.compat.v1.get_variable(name = 'All_Read_vectors',shape=[self.num_read_heads, batch_size, self.memory_columns], dtype = tf.float32,                   #                                                                              initializer=tf.random_normal_initializer(stddev = 0.5)),
+        #    
+        #    'All_Weight_vectors': tf.compat.v1.get_variable(name = 'All_Weight_vectors',shape=[self.total_num_heads, batch_size, self.memory_rows], dtype = tf.float32,                 #                                                                                  initializer=tf.random_normal_initializer(stddev = 0.5)),
+        #    'Memory_Matrix': tf.compat.v1.get_variable(name = 'Memory_Matrix',shape=[batch_size, self.memory_rows, self.memory_columns], dtype = tf.float32,                             #                                                                       initializer=tf.random_normal_initializer(stddev = 0.5))
+        #}
         return initial_state
