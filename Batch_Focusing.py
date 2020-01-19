@@ -25,10 +25,10 @@ def ContentFocusing(k_t, M_prev, beta_t, K = None):
         K_kt_Mprev = K(k_t,M_prev)
     
     else:
-        K_kt_Mprev = tf.reduce_sum(tf.reshape(k_t,(batch_size,1,M))*M_prev, axis = 2) /  tf.multiply(tf.reshape(tf.linalg.norm(k_t,axis =1),(batch_size,1)),tf.linalg.norm(M_prev,axis = 2)) 
+        K_kt_Mprev = tf.reduce_sum(tf.reshape(k_t,(batch_size,1,M))*M_prev, axis = 2) / ( tf.multiply(tf.reshape(tf.linalg.norm(k_t,axis =1),(batch_size,1)),tf.linalg.norm(M_prev,axis = 2)) + 1e-5) 
         #^ Of shape [batch_size, N]
     exp_vals = tf.exp(beta_t*K_kt_Mprev)
-    w_ct = exp_vals / tf.reshape(tf.reduce_sum(exp_vals,axis = 1),(-1,1)) 
+    w_ct = exp_vals / (tf.reshape(tf.reduce_sum(exp_vals,axis = 1),(-1,1)) + 1e-5)
     
     assert w_ct.shape == (batch_size,N)
     
@@ -63,46 +63,52 @@ def LocationFocusing( k_t, M_prev, beta_t,    g_t, w_prev, s_t, gamma_t,   K = N
     
     #Convolutional Shift
         #The main Hurdle!!
-    w_hat_t = tf.concat([Convolution(s_t[i],w_gt[i]) for i in range(batch_size)],axis = 0)
+    LSR = s_t.shape[1]
+    w_hat_t = tf.concat([Convolution(s_t[i],w_gt[i], LSR) for i in range(batch_size)],axis = 0)
     #^Of shape [batch_size, N]
-    
+    #print('w_hat_t shape: ',w_hat_t.shape)
     
     #Sharpening
-    powered = tf.pow(w_hat_t, g_t)
+    powered = tf.pow(w_hat_t + 1e-5, g_t)
     w_t = powered / tf.reshape(tf.reduce_sum(powered, axis = 1),(-1,1))
     
     return w_t
 
 
-def Convolution(s_t, w_gt):
+def Convolution(s_t, w_gt, LSR):
     '''
-    The Circular Convolutor.
+    The Circular Convolver.
     
     s_t: (len(shift_range),) ; Shift Weighting of the particualar input
     w_gt: (N,) ; W_gt Vector for the particualar input as calculated in the Focusing function
-    
+    LSR: Scalar ; Length of Shift Range
     RETURNS:
     
     w_hat_t: (1,N) ; Vector found after Circular Convolution of s_t on w_gt
     '''
-    LSR = len(s_t) #length of shift range
     N = w_gt.shape[0]
     test = []
     for i in range(LSR):
         test.append([j for j in range(i+1, 2*N + i, 2)])
     repeat_matrix = tf.transpose(tf.convert_to_tensor(test))
-    if N%LSR != 0:
-        repeat_matrix = tf.concat([repeat_matrix,tf.transpose(test[:N%LSR])],axis = 1)
+    
+    #Bruh....
+    #if N%LSR != 0:
+    #    repeat_matrix = tf.concat([repeat_matrix,tf.transpose(test[:N%LSR])],axis = 1)
 
-    index_mat = np.array(repeat_matrix%LSR,dtype = np.float32)
-
+    #print('Repeat_Matrix.shape', repeat_matrix.shape)
+    indices = repeat_matrix%LSR
+    index_mat = np.array(indices, dtype = np.float32)
+    
     for i in range(LSR):
         index_mat[index_mat == (i+1)%LSR] = s_t[i]
 
     res = tf.matmul(tf.reshape(w_gt,(1,-1)),index_mat)
-
+    
     final_result = tf.concat([res for _ in range(int(N/LSR))], axis = 1)
     if N%LSR != 0:
         final_result = tf.concat([final_result,res[:,:N%LSR]], axis = 1)
         
+    #assert final_result.shape == (1,N)
+    
     return final_result
