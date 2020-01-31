@@ -10,3 +10,6 @@ Progress Timeline:
 2. Sun, Jan 19:-
 + Added *sigmoid* layer on *Heads_w_t* which produced much better results on one time step passes (not the training)
 + In the process of finalizing the training schedule.
+
+3. Fri, Jan 31:-
++ First Complete version, added Inputs Generator for Copy Task with minor bug fixes
