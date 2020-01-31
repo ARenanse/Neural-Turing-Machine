@@ -12,4 +12,6 @@ Progress Timeline:
 + In the process of finalizing the training schedule.
 
 3. Fri, Jan 31:-
-+ First Complete version, added Inputs Generator for Copy Task with minor bug fixes
++ First Complete version, added Inputs Generator for Copy Task and some minor bug fixes.
++ One still needs to train this though, there maybe some problems during training which one needs to solve.
+
