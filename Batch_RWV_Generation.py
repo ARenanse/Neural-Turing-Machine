@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-
+@tf.function
 def ReadVector(M_t, w_t):
     '''
     Computes the Read Vector of EACH HEAD for the entire Batch at once.
@@ -21,11 +21,12 @@ def ReadVector(M_t, w_t):
     #print('w_t shape: ',w_t.shape)
     r_t = tf.reshape(  tf.matmul(tf.reshape(w_t,(batch_size,1,N)),M_t), (batch_size,M)   )
     
+    #tf.print('ReadVector: ',tf.math.reduce_any(tf.math.is_nan( r_t )) )
     #assert r_t.shape == (batch_size,M)
     
     return r_t
 
-
+@tf.function
 def WriteOnMemory(M_prev, w_t, e_t, a_t):
     
     '''
@@ -46,11 +47,16 @@ def WriteOnMemory(M_prev, w_t, e_t, a_t):
     M_hat_t = tf.multiply( M_prev, 1-tf.multiply(tf.reshape(w_t,(batch_size,N,1)),tf.reshape(e_t,(batch_size,1,M))))
     #^Of shape [batch_size,N,M]
     
+    #tf.print('WriteOnMemory M_hat_t',tf.math.reduce_any(tf.math.is_nan( M_hat_t )) )
+
     
-    assert M_hat_t.shape == M_prev.shape
+    #assert M_hat_t.shape == M_prev.shape
     
-    M_t = M_prev + tf.multiply(tf.reshape(w_t,(batch_size,N,1)),tf.reshape(a_t,(batch_size,1,M)))
+    M_t = M_hat_t + tf.multiply(tf.reshape(w_t,(batch_size,N,1)),tf.reshape(a_t,(batch_size,1,M)))
     
-    assert M_t.shape == M_prev.shape
+    #tf.print('WriteOnMemory',tf.math.reduce_any(tf.math.is_nan( M_t )) )
+
+    
+    #assert M_t.shape == M_prev.shape
     
     return M_t
