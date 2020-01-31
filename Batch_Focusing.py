@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
+@tf.function(experimental_relax_shapes = True)
 def ContentFocusing(k_t, M_prev, beta_t, K = None):
     
     '''
@@ -16,7 +17,7 @@ def ContentFocusing(k_t, M_prev, beta_t, K = None):
     w_ct : (Batch_size,N), Weighting after Content Focusing. 
     '''
     
-    batch_size,N,M = M_prev.shape
+    batch_size,N,M = tf.constant(M_prev.shape[0]), tf.constant(M_prev.shape[1]), tf.constant(M_prev.shape[2])
     
 
     
@@ -25,16 +26,20 @@ def ContentFocusing(k_t, M_prev, beta_t, K = None):
         K_kt_Mprev = K(k_t,M_prev)
     
     else:
-        K_kt_Mprev = tf.reduce_sum(tf.reshape(k_t,(batch_size,1,M))*M_prev, axis = 2) / ( tf.multiply(tf.reshape(tf.linalg.norm(k_t,axis =1),(batch_size,1)),tf.linalg.norm(M_prev,axis = 2)) + 1e-5) 
+        K_kt_Mprev = tf.reduce_sum(tf.reshape(k_t,(batch_size,1,M))*M_prev, axis = 2) / ( tf.multiply(tf.reshape(tf.linalg.norm(k_t,axis =1),(batch_size,1)),tf.linalg.norm(M_prev,axis = 2)) + 1e-8) 
         #^ Of shape [batch_size, N]
     exp_vals = tf.exp(beta_t*K_kt_Mprev)
-    w_ct = exp_vals / (tf.reshape(tf.reduce_sum(exp_vals,axis = 1),(-1,1)) + 1e-5)
+    w_ct = exp_vals / (tf.reshape(tf.reduce_sum(exp_vals,axis = 1),(-1,1)) + 1e-8)
     
-    assert w_ct.shape == (batch_size,N)
+    #assert w_ct.shape == (batch_size,N)
     
+    
+    #tf.print('Content_Focusing',tf.math.reduce_any(tf.math.is_nan( w_ct )) )
+
     return w_ct
 
 
+@tf.function(experimental_relax_shapes = True)
 def LocationFocusing( k_t, M_prev, beta_t,    g_t, w_prev, s_t, gamma_t,   K = None):
     
     '''
@@ -54,29 +59,119 @@ def LocationFocusing( k_t, M_prev, beta_t,    g_t, w_prev, s_t, gamma_t,   K = N
     
     w_ct = ContentFocusing(k_t, M_prev, beta_t, K)
     
-    batch_size,N,M = M_prev.shape
+    #tf.print('w_ct: ', w_ct)
+    
+    batch_size,N,M = M_prev.shape[0], tf.constant(M_prev.shape[1]), tf.constant(M_prev.shape[2])
     
     #assert w_prev.shape == (N,)
     
     #Interpolation
     w_gt = g_t * w_ct + (1 - g_t) * w_prev
     
+    #tf.print('w_prev', w_prev)    
+    #tf.print('w_gt', w_gt)
+    
     #Convolutional Shift
         #The main Hurdle!!
     LSR = s_t.shape[1]
-    w_hat_t = tf.concat([Convolution(s_t[i],w_gt[i], LSR) for i in range(batch_size)],axis = 0)
+    
+    
+    #Deprecated
+    #w_hat_t = tf.concat([Convolution(s_t[i],w_gt[i], LSR) for i in range(batch_size)],axis = 0)
     #^Of shape [batch_size, N]
     #print('w_hat_t shape: ',w_hat_t.shape)
     
+    #tf.print('LocationFocusing_b4_BC',tf.math.reduce_any(tf.math.is_nan( w_gt )) )
+    
+    w_hat_t = Batch_Convolution(s_t,w_gt)
+    
+    #tf.print('w_hat_t', w_hat_t)
+
+    
+    #tf.print('LocationFocusing_after_BC',tf.math.reduce_any(tf.math.is_nan( w_hat_t )) )
+
+    
+    
     #Sharpening
-    powered = tf.pow(w_hat_t + 1e-5, g_t)
-    w_t = powered / tf.reshape(tf.reduce_sum(powered, axis = 1),(-1,1))
+    powered = tf.pow(w_hat_t, gamma_t)
+    
+#     tf.print('LocationFocusing_after_powered',tf.math.reduce_any(tf.math.is_nan( powered )) )
+#     tf.print(w_hat_t)
+#     tf.print(gamma_t)
+#     tf.print(powered)
+    
+    w_t = powered / (tf.expand_dims(tf.reduce_sum(powered, axis = 1),axis = 1) + 1e-8)
+
+    #tf.print('LocationFocusing',tf.math.reduce_any(tf.math.is_nan( w_t )) )
+
     
     return w_t
 
 
-def Convolution(s_t, w_gt, LSR):
+@tf.function
+def Batch_Convolution(s_t,w_gt):
+    
+    '''    
+    The Circular Convolver.
+    
+    s_t: (batch_size,len(shift_range),) ; Shift Weighting of the particualar input
+    w_gt: (batch_size,N) ; W_gt Vector for the particualar input as calculated in the Focusing function
+
+    RETURNS:
+    
+    w_hat_t: (batch_size,N) ; Vector found after Circular Convolution of s_t on w_gt
     '''
+    
+    #tf.print('s_t ', s_t)
+    
+    LSR = s_t.shape[1]
+    N = w_gt.shape[1]
+    TEST = tf.concat([s_t, tf.zeros([s_t.shape[0],N-LSR])], axis = 1)
+    conv_matrix = tf.stack([(tf.roll(TEST,shift=i-1,axis  =1)) for i in range(0,N)], axis = 1)
+    result =  tf.reduce_sum(tf.multiply(conv_matrix,tf.expand_dims(w_gt, axis = 1)), axis = 2 )
+    
+    #tf.print('Batch_COnvolution',tf.math.reduce_any(tf.math.is_nan( result )) )
+
+    
+    return result
+
+
+@tf.function(experimental_relax_shapes = True)
+def Convolution(s_t, w_gt, LSR):
+    
+    '''
+    
+    ************DEPRECATED DUE TO PERFORMANCE ISSUES**********************
+    
+    The Circular Convolver.
+    
+    s_t: (len(shift_range),) ; Shift Weighting of the particualar input
+    w_gt: (N,) ; W_gt Vector for the particualar input as calculated in the Focusing function
+    LSR: Scalar ; Length of Shift Range
+    RETURNS:
+    
+    w_hat_t: (1,N) ; Vector found after Circular Convolution of s_t on w_gt
+    '''
+    N = w_gt.shape[0]
+    
+    s_t = tf.expand_dims(s_t , axis = 0)
+    w_gt = tf.expand_dims(w_gt, axis = 0)
+
+    TEST = tf.concat([s_t, tf.zeros([1,N-LSR])],axis = 1)
+
+    conv_matrix = tf.stack([(tf.roll(tf.reshape(TEST,[-1]),shift=i-1,axis  =0)) for i in range(0,N)])
+
+    result = tf.expand_dims(tf.reduce_sum(tf.multiply(conv_matrix,w_gt), axis = 1), axis = 0 )
+
+    return result
+
+
+@tf.function
+def Convolution_FALSE(s_t, w_gt, LSR):
+    '''
+    
+    *******WRONG FORM OF CONVOLUTION*******
+    
     The Circular Convolver.
     
     s_t: (len(shift_range),) ; Shift Weighting of the particualar input
@@ -97,13 +192,11 @@ def Convolution(s_t, w_gt, LSR):
     #    repeat_matrix = tf.concat([repeat_matrix,tf.transpose(test[:N%LSR])],axis = 1)
 
     #print('Repeat_Matrix.shape', repeat_matrix.shape)
-    indices = repeat_matrix%LSR
-    index_mat = np.array(indices, dtype = np.float32)
-    
+    indices = tf.cast(repeat_matrix%LSR, tf.float32)
     for i in range(LSR):
-        index_mat[index_mat == (i+1)%LSR] = s_t[i]
-
-    res = tf.matmul(tf.reshape(w_gt,(1,-1)),index_mat)
+        indices = tf.where((indices == (i+1)%LSR),s_t[i],indices)
+    
+    res = tf.matmul(tf.reshape(w_gt,(1,-1)),indices)
     
     final_result = tf.concat([res for _ in range(int(N/LSR))], axis = 1)
     if N%LSR != 0:
