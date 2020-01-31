@@ -65,11 +65,11 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
 
         assert inputs.shape[1] == self.num_bits_per_output_vector
 
-        controller_input = [All_prev_read_vectors[i] for i in range(All_prev_read_vectors.shape[0])]
-       
-        controller_input.append(inputs)
+        PRV = [All_prev_read_vectors[i] for i in range(All_prev_read_vectors.shape[0])]  #PRV: Previous Read Vectors
 
-        controller_input = tf.concat(controller_input, axis = 1)
+        PRV.insert(0, inputs)
+            
+        controller_input = tf.concat(PRV, axis = 1)
 
         assert controller_input.shape[1] == self.num_read_heads * self.memory_columns + inputs.shape[1]
 
@@ -194,11 +194,11 @@ class NTMCell(tf.keras.layers.AbstractRNNCell):
 
 
         initial_state = {
-                      'controller_state': [tf.compat.v1.get_variable(name = 'controller_state_memory',shape=[batch_size, self.rnn_size], dtype = tf.float32,                                                                initializer=tf.random_normal_initializer(stddev = 0.5)), tf.compat.v1.get_variable(name = 'controller_state_carry',shape=[batch_size,                                                                                             self.rnn_size], dtype = tf.float32, initializer=tf.random_normal_initializer(stddev = 0.5))],
+                      'controller_state': [tf.nn.tanh(tf.compat.v1.get_variable(name = 'controller_state_memory',shape=[batch_size, self.rnn_size], dtype = tf.float32,                                                                initializer=tf.random_normal_initializer(stddev = 0.5))), tf.nn.tanh(tf.compat.v1.get_variable(name = 'controller_state_carry',shape=[batch_size,                                                                                             self.rnn_size], dtype = tf.float32, initializer=tf.random_normal_initializer(stddev = 0.5)))],
 
-                      'All_Read_vectors': tf.compat.v1.get_variable(name = 'All_Read_vectors',shape=[self.num_read_heads, batch_size, self.memory_columns], dtype = tf.float32,                                                                                                initializer=tf.random_normal_initializer(stddev = 0.5)),
+                      'All_Read_vectors': tf.nn.tanh(tf.compat.v1.get_variable(name = 'All_Read_vectors',shape=[self.num_read_heads, batch_size, self.memory_columns], dtype = tf.float32,                                                                                                initializer=tf.random_normal_initializer(stddev = 0.5))),
 
                       'All_Weight_vectors': tf.nn.softmax(tf.compat.v1.get_variable(name = 'All_Weight_vectors',shape=[2, batch_size, self.memory_rows], dtype = tf.float32,initializer=tf.random_normal_initializer(stddev = 0.5)), axis = 2),
-                      'Memory_Matrix': tf.compat.v1.get_variable(name = 'Memory_Matrix',shape=[batch_size, self.memory_rows, self.memory_columns], dtype = tf.float32,                                                                                                  initializer=tf.random_normal_initializer(stddev = 0.5))
+                      'Memory_Matrix': tf.tanh(tf.compat.v1.get_variable(name = 'Memory_Matrix',shape=[batch_size, self.memory_rows, self.memory_columns], dtype = tf.float32,                                                                                                  initializer=tf.random_normal_initializer(stddev = 0.5)))
                     }
         return initial_state
