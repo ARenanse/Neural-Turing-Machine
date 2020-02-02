@@ -15,3 +15,9 @@ Progress Timeline:
 + First Complete version, added Inputs Generator for Copy Task and some minor bug fixes.
 + One still needs to train this though, there maybe some problems during training which one needs to solve.
 
+4. Sun, Feb 2:-
++ Training with Cross Entropy Loss Function proved to be difficult as loss seem to be stuck somewhere between 0.4 - 0.55
++ Using Huber Loss Function seem to generate much better results, as loss seem to decrease linearly.
+
+
+
