@@ -18,7 +18,7 @@ Progress Timeline:
 
 4. Sun, Feb 2:-
 + Training with Cross Entropy Loss Function proved to be difficult as loss seem to be stuck somewhere between 0.4 - 0.55
-+ Using Huber Loss Function seem to generate much better results, as loss seem to decrease linearly.
++ *Using Huber Loss Function seem to generate much better results, as loss seem to decrease linearly from 1.2 to 0.6 on max sequence length in about 10,000 epochs, after 1 injection of randomized initial states while preserving the weights.
 
 
 
