@@ -7,7 +7,7 @@ An attempt at Understanding and Implementation of the corresponding Paper by Ale
 
 Training the above NTM on randomized sequence length between 1 and 20 yields the following results.
 
-#### 1.1. Till 10,000 epochs on Huber Loss Function with $ \delta $ = 0.001
+#### 1.1. Till 10,000 epochs on Huber Loss Function with delta  = 0.001
 
 Input:
 
