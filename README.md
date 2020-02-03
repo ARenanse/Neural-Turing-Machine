@@ -1,7 +1,38 @@
 # Neural-Turing-Machine
 An attempt at Understanding and Implementation of the corresponding Paper by Alex Graves et al.
 
-Progress Timeline:
+## Task Results
+
+### 1. Copy Task
+
+Training the above NTM on randomized sequence length between 1 and 20 yields the following results.
+
+#### 1.1. Till 10,000 epochs on Huber Loss Function with $ \delta $ = 0.001
+
+Input:
+
+Sequence Length = 9, including the Start Of File and End Of File delimeters.
+
+![Input seq_len = 9](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/input.png)
+
+Output:
+
+![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/output.png)
+
+
+Input:
+
+Sequence Length = 33, including the Start Of File and End Of File delimeters.
+
+Note that it is more than what the above NTM is trained upon.
+
+![Input seq_len = 33](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_input.png)
+
+Output:
+
+![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output.png)
+
+## Progress Timeline:
 
 1. Wed, Jan 15:-
 + Completed the NTMCell Implementation along with various Vector Generation Tasks.
