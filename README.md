@@ -35,7 +35,7 @@ Note that it is more than what the above NTM is trained upon.
 
 ##### Input:
 
-Sequence Length = 70, including the Start Of File and End Of File delimeters.
+Sequence Length = 73, including the Start Of File and End Of File delimeters.
 
 ![Input](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_input_2.png)
 
