@@ -9,18 +9,18 @@ Training the above NTM on randomized sequence length between 1 and 20 yields the
 
 #### 1.1. Till 10,000 epochs on Huber Loss Function with delta  = 0.001
 
-Input:
+##### Input:
 
 Sequence Length = 9, including the Start Of File and End Of File delimeters.
 
 ![Input seq_len = 9](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/input.png)
 
-Output:
+##### Output:
 
 ![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/output.png)
 
 
-Input:
+##### Input:
 
 Sequence Length = 33, including the Start Of File and End Of File delimeters.
 
@@ -28,9 +28,20 @@ Note that it is more than what the above NTM is trained upon.
 
 ![Input seq_len = 33](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_input.png)
 
-Output:
+##### Output:
 
 ![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output.png)
+
+
+##### Input:
+
+Sequence Length = 70, including the Start Of File and End Of File delimeters.
+
+![Input](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_input_2.png)
+
+##### Output:
+
+![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output_2.png)
 
 ## Progress Timeline:
 
