@@ -62,5 +62,7 @@ Sequence Length = 73, including the Start Of File and End Of File delimeters.
 + Training with Cross Entropy Loss Function proved to be difficult as loss seem to be stuck somewhere between 0.4 - 0.55
 + *Using Huber Loss Function seem to generate much better results, as loss seem to decrease linearly from 1.2 to 0.6 on max sequence length in about 10,000 epochs, after 1 injection of randomized initial states while preserving the weights.
 
+5. Wed, Feb 6:-
++ More careful analysis brought some more subtle bugs, which were holding back the generalisation of the model, removing those increases generalization much better with Cross Entropy Loss now.
 
 
