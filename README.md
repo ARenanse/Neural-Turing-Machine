@@ -55,6 +55,10 @@ Sequence Length = 90, including the Start Of File and End Of File delimeters.
 
 ![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output_3.png)
 
+##### Error incurred
+
+![Error](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_3_error.png)
+
 ##### Memory Matrix for this input after last timestep:
 
 ![Memory Matrix](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output_3_Memory_Matrix.png)
