@@ -9,6 +9,8 @@ An attempt at Understanding and Implementation of the corresponding Paper by Ale
 
 #### 1.1. Till 10,000 epochs on Cross Entropy Loss.
 
+##### Test 1:-
+
 ##### Input:
 
 Sequence Length = 9, including the Start Of File and End Of File delimeters.
@@ -19,6 +21,8 @@ Sequence Length = 9, including the Start Of File and End Of File delimeters.
 
 ![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/output.png)
 
+
+##### Test 2:-
 
 ##### Input:
 
@@ -32,6 +36,7 @@ Note that it is more than what the above NTM is trained upon.
 
 ![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output.png)
 
+##### Test 3:-
 
 ##### Input:
 
