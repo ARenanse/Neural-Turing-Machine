@@ -7,7 +7,7 @@ An attempt at Understanding and Implementation of the corresponding Paper by Ale
 
 Training the above NTM on randomized sequence length between 1 and 20 yields the following results.
 
-#### 1.1. Till 10,000 epochs on Huber Loss Function with delta  = 0.001
+#### 1.1. Till 10,000 epochs on Cross Entropy Loss.
 
 ##### Input:
 
@@ -42,6 +42,23 @@ Sequence Length = 73, including the Start Of File and End Of File delimeters.
 ##### Output:
 
 ![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output_2.png)
+
+#### 1.2. Till 20,000 epochs on Cross Entropy Loss.
+
+##### Input:
+
+Sequence Length = 90, including the Start Of File and End Of File delimeters.
+
+![Input](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_input_3.png)
+
+##### Output:
+
+![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output_3.png)
+
+##### Memory Matrix after last timestep:
+
+![Memory Matrix](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output_3_Memory_Matrix.png)
+
 
 ## Progress Timeline:
 
