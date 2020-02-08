@@ -5,7 +5,7 @@ An attempt at Understanding and Implementation of the corresponding Paper by Ale
 
 ### 1. Copy Task
 
-Training the above NTM on randomized sequence length between 1 and 20 yields the following results.
+**Training the above NTM on randomized sequence length between 1 and 20 yields the following results.**
 
 #### 1.1. Till 10,000 epochs on Cross Entropy Loss.
 
