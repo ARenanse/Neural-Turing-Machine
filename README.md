@@ -68,6 +68,7 @@ Sequence Length = 90, including the Start Of File and End Of File delimeters.
 
 ![Memory Matrix](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/COPY%20TASK/Till%2010000%20epochs/test_output_3_Memory_Matrix.png)
 
+#### Results on more tasks to follow soon...
 
 ## Progress Timeline:
 
