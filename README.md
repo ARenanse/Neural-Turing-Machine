@@ -76,22 +76,24 @@ Training the Associative Recall Model for randomized item numbers between 2 and 
 
 #### Input 
 
-![Input]()
+![Input](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/input_2.png)
 
 #### Output from NTM
 
-![Output]()
+![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/output_2.png)
 
-#### Read Weight over time
+#### Read Weighting over time
 
-![RWeights]()
+![RWeights](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/WriteHead_Reading_1.png)
 
 #### Memory Matrix compared with Read Vectors while Writing
 
-![MM]() 
-![RW while W]()
+![MM](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/MMduringWriting.png) 
+![RV while W](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/ReadVectorsWhileWriting.png)
 
 #### Memory Matrix Evolution over Time
+
+![MM Evolution](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/MM_Evo.gif)
 
 ## Progress Timeline:
 
