@@ -82,7 +82,7 @@ Training the Associative Recall Model for randomized item numbers between 2 and 
 
 ![Output](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/output_2.png)
 
-#### Read Weighting over time
+#### Write Weighing while Reading over time
 
 ![RWeights](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/ASSOCIATIVE%20RECALL%20TASK/WriteHead_Reading_1.png)
 
