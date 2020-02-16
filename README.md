@@ -70,6 +70,29 @@ Sequence Length = 90, including the Start Of File and End Of File delimeters.
 
 #### Results on more tasks to follow soon...
 
+### Associative Recall Task
+
+Training the Associative Recall Model for randomized item numbers between 2 and 6 yields the following results:
+
+#### Input 
+
+![Input]()
+
+#### Output from NTM
+
+![Output]()
+
+#### Read Weight over time
+
+![RWeights]()
+
+#### Memory Matrix compared with Read Vectors while Writing
+
+![MM]() 
+![RW while W]()
+
+#### Memory Matrix Evolution over Time
+
 ## Progress Timeline:
 
 1. Wed, Jan 15:-
