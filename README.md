@@ -117,4 +117,6 @@ Training the Associative Recall Model for randomized item numbers between 2 and 
 5. Wed, Feb 6:-
 + More careful analysis brought some more subtle bugs, which were holding back the generalisation of the model, removing those increases generalization much better with Cross Entropy Loss now.
 
+6. Sun, Feb 16:-
++ Added Associative Recall Task.
 
