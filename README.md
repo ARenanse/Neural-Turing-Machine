@@ -1,7 +1,9 @@
 # Neural-Turing-Machine
 A modular implementation of the Neural Turing Machine introduced by Alex Graves et al.
 
-Currently, two tasks have been implemented, Copy Task and Associative Recall Task as tf.keras.Model wrapper, available in the NTM_model.py
+Currently, two tasks have been implemented, Copy Task and Associative Recall Task as tf.keras.Model wrapper, available in the NTM_Model.py
+
+Use them as showed in the Training Notebooks
 ## Task Results
 
 ### 1. Copy Task
