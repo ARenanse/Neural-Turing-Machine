@@ -75,7 +75,7 @@ Sequence Length = 90, including the Start Of File and End Of File delimeters.
 
 ### 2. Associative Recall Task
 
-Training the Associative Recall Model on randomized item numbers between 2 and 6 yields the following results:
+Training the Associative Recall Model for 158,000 episodes on randomized item numbers between 2 and 6 yields the following results:
 
 #### Input 
 
