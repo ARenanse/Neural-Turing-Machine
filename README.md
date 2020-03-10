@@ -4,6 +4,16 @@ A modular implementation of the Neural Turing Machine introduced by Alex Graves 
 Currently, two tasks have been implemented, Copy Task and Associative Recall Task as tf.keras.Model wrapper, available in the NTM_Model.py
 
 Use them as showed in the Training Notebooks
+
+## Architecture Implemented
+
+Since the paper only provides the mathematical operations for the generation and use of the Heads' Weighings, not the full architecture, thus the complete architecture becomes an open ended problem, where I've used the following architecture:
+
+![Architecture](https://github.com/WhenDustSettles/Neural-Turing-Machine/blob/master/RESULTS/Picture1.png)
+
+
+
+
 ## Task Results
 
 ### 1. Copy Task
